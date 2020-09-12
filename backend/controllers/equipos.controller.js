@@ -8,11 +8,11 @@ equipoCtrl.getEquipos = async (req, res, next) => {
 };
 
 equipoCtrl.createEquipo = async (req, res, next) => {
-    const { equipo, cantidad, precio, serie, _proveedor_nombre , descripcion } = req.body;
+    const { equipo, cantidad, precio, serie, _proveedor_nombre, descripcion } = req.body;
     console.log(req.body)
-   const row = await pool.query('select * from proveedor where proveedor_nombre = ?', _proveedor_nombre);
+    const row = await pool.query('select * from proveedor where proveedor_nombre = ?', _proveedor_nombre);
     row.forEach(element => {
-      proveedor = element.id_proveedor
+        proveedor = element.id_proveedor
     });
     const newEquipo = {
         equipo,
@@ -23,7 +23,7 @@ equipoCtrl.createEquipo = async (req, res, next) => {
         descripcion
     };
     console.log(newEquipo)
-      await pool.query('insert into equipos  set ?', newEquipo);
+    await pool.query('insert into equipos  set ?', newEquipo);
     res.json({ status: 'equipo  creada' });
 };
 equipoCtrl.getEquipo = async (req, res, next) => {
