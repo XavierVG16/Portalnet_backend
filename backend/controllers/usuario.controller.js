@@ -8,15 +8,15 @@ usuarioCtrl.getUsuarios = async (req, res, next) => {
 };
 
 usuarioCtrl.createUsuario = async (req, res, next) => {
-  const { nombre, apellido, email, pass_usuario, tipo_usuario } = req.body;
+  const { nombre, apellido, email, pass_usuario, t_usuario, telefono  } = req.body;
   console.log(req.body)
 
   const newUsuario = {
-    nombre, apellido, email, pass_usuario, tipo_usuario
+    nombre, apellido, email, pass_usuario, t_usuario, telefono 
   };
   newUsuario.pass_usuario = await helpers.encryptPassword(pass_usuario);
 
-  await pool.query('insert into usuario  set ?', newUsuario);
+  await pool.query('insert into usuarios  set ?', newUsuario);
   res.json({ status: 'usuario creada' });
 };
 usuarioCtrl.getUsuario = async (req, res, next) => {
@@ -28,11 +28,12 @@ usuarioCtrl.getUsuario = async (req, res, next) => {
 usuarioCtrl.editUsuario = async (req, res, next) => {
   const { id } = req.params;
 
-  const { nombre, apellido, email, pass_usuario, tipo_usuario } = req.body;
+  const { nombre, apellido, email, pass_usuario, t_usuario, telefono } = req.body;
 
   const editUsuario = {
-    nombre, apellido, email, pass_usuario, tipo_usuario
+    nombre, apellido, email, pass_usuario, t_usuario, telefono 
   };
+  editUsuario.pass_usuario = await helpers.encryptPassword(pass_usuario);
   await pool.query('UPDATE usuarios set ? WHERE idusuario = ?', [editUsuario, id]);
   res.json({ status: 'usuario Updated' });
 };

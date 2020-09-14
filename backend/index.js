@@ -37,7 +37,7 @@ app.use(multer({ storage }).single("image"));
 app.use('/servicio', require('./routes/servicio.routes'));
 app.use('/proveedor', require('./routes/proveedor.router'));
 app.use('/equipo', require('./routes/equipos.router'));
-app.use('/producto', require('./routes/producto.router') );
+app.use('/producto', require('./routes/producto.router'));
 app.use('/usuario', require('./routes/usuario.router'));
 
 // starting the server
