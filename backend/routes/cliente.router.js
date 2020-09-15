@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const cliente = require("../controllers/cliente.controller");
-const { report, route } = require("./categoria.routes");
-const clienteCtrl = require("../controllers/cliente.controller");
+
+
 
 router.get("/", cliente.getclientes);
 router.post("/", cliente.createCliente);

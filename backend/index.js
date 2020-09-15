@@ -39,6 +39,7 @@ app.use('/proveedor', require('./routes/proveedor.router'));
 app.use('/equipo', require('./routes/equipos.router'));
 app.use('/producto', require('./routes/producto.router'));
 app.use('/usuario', require('./routes/usuario.router'));
+app.use('/cliente', require('./routes/cliente.router'));
 
 // starting the server
 app.listen(app.get('port'), () => {

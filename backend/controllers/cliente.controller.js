@@ -2,62 +2,79 @@ const pool = require("../database");
 
 const clienteCtrl = {};
 
-clienteCtrl.getclientes = async (req, res) => {
+clienteCtrl.getclientes = async (req, res, next) => {
   const cliente = await pool.query("select * from cliente");
   res.json(cliente);
 };
 
-clienteCtrl.createCliente = async (req, res) => {
+clienteCtrl.createCliente = async (req, res, next) => {
   const {
+    cedula,
     nombre,
     apellido,
-    num_documento,
     direccion,
-    telefono,
-    email
+    propiedad,
+    referencia,
+    estado,
+    descripcion_estado,
+    email,
+    telefono
+
   } = req.body;
   const newCliente = {
+    cedula,
     nombre,
     apellido,
-    num_documento,
     direccion,
-    telefono,
-    email
+    propiedad,
+    referencia,
+    estado,
+    descripcion_estado,
+    email,
+    telefono
   };
   await pool.query("insert into cliente set ?", newCliente);
 
   res.json({ status: "Cliente creado" });
 };
 
-clienteCtrl.getcliente = async (req, res) => {
+clienteCtrl.getcliente = async (req, res, next) => {
   const { id } = req.params;
   const cliente = await pool.query(
-    "select * from cliente where idpersona = ?",
+    "select * from cliente where cedula = ?",
     [id]
   );
 
   res.json(cliente);
 };
 
-clienteCtrl.editCliente = async (req, res) => {
+clienteCtrl.editCliente = async (req, res, next) => {
   const { id } = req.params;
   const {
+   
     nombre,
     apellido,
-    num_documento,
     direccion,
-    telefono,
-    email
+    propiedad,
+    referencia,
+    estado,
+    descripcion_estado,
+    email,
+    telefono
   } = req.body;
   const editCliente = {
+   
     nombre,
     apellido,
-    num_documento,
     direccion,
-    telefono,
-    email
+    propiedad,
+    referencia,
+    estado,
+    descripcion_estado,
+    email,
+    telefono
   };
-  await pool.query("update cliente set ? where idpersona = ?", [
+  await pool.query("update cliente set ? where cedula = ?", [
     editCliente,
     id,
   ]);
@@ -65,10 +82,10 @@ clienteCtrl.editCliente = async (req, res) => {
   res.json("cliente actualizado");
 };
 
-clienteCtrl.deleteCliente = async (req, res) => {
+clienteCtrl.deleteCliente = async (req, res, next) => {
   const { id } = req.params;
 
-  await pool.query("delete from cliente where idpersona = ?", [id]);
+  await pool.query("delete from cliente where cedula = ?", [id]);
   res.json({ status: "Cliente elimiado" });
 };
 module.exports = clienteCtrl;
