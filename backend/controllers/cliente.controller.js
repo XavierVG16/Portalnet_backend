@@ -2,6 +2,8 @@ const pool = require("../database");
 
 const clienteCtrl = {};
 
+var id_cliente;
+
 clienteCtrl.getclientes = async (req, res, next) => {
   const cliente = await pool.query("select * from cliente");
   res.json(cliente);
@@ -33,8 +35,10 @@ clienteCtrl.createCliente = async (req, res, next) => {
     email,
     telefono
   };
-  await pool.query("insert into cliente set ?", newCliente);
+  const id = await pool.query("insert into cliente set ?", newCliente);
 
+  id_cliente = id.insertId;
+  console.log(id_cliente)
   res.json({ status: "Cliente creado" });
 };
 
@@ -51,7 +55,7 @@ clienteCtrl.getcliente = async (req, res, next) => {
 clienteCtrl.editCliente = async (req, res, next) => {
   const { id } = req.params;
   const {
-   
+
     nombre,
     apellido,
     direccion,
@@ -63,7 +67,7 @@ clienteCtrl.editCliente = async (req, res, next) => {
     telefono
   } = req.body;
   const editCliente = {
-   
+
     nombre,
     apellido,
     direccion,

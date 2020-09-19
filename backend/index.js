@@ -14,7 +14,7 @@ const { database } = require("./keys");
 app.set('port', process.env.PORT || 3000);
 
 // Middlewares
-app.use(cors({ origin: 'https://sistema-portalnet.herokuapp.com' }));
+app.use(cors({ origin: 'https://sistemaportalnet.herokuapp.com' }));
 app.use(express.json());
 app.use(
   session({
@@ -40,6 +40,7 @@ app.use('/equipo', require('./routes/equipos.router'));
 app.use('/producto', require('./routes/producto.router'));
 app.use('/usuario', require('./routes/usuario.router'));
 app.use('/cliente', require('./routes/cliente.router'));
+app.use('/orden',require('./routes/orden_instalacion.router'));
 
 // starting the server
 app.listen(app.get('port'), () => {
