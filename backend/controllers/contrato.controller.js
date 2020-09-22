@@ -1,6 +1,8 @@
 const pool = require("../database");
 
 const contratoCtrl = {};
+var idorden_instalacion;
+
 contratoCtrl.getcontratos = async (req, res, next) => {
     const contrato = await pool.query("select * from contrato_servicio");
 
@@ -8,21 +10,75 @@ contratoCtrl.getcontratos = async (req, res, next) => {
 };
 
 contratoCtrl.createContrato = async (req, res, next) => {
+
+
     const { cedula, nombre, apellido, direccion, referencia } = req.body;
 
     // IMNGRESAR clientes
     const newCliente = {
         cedula, nombre, apellido, direccion, referencia
     };
-    await pool.query('insert into cliente  set ?', newCliente);
+    const cliente = await pool.query('insert into cliente  set ?', newCliente);
+
+    const idcliente = cliente.insertId
+
+
     //----------------------------------------------------------------------------------//
     //orden Instalacion
     const { dia_instalacion, hora_instalacion } = req.body;
+    const newOrden = { dia_instalacion, hora_instalacion }
 
-    const newOrden_instalacion = await pool.query('insert into orden_instalacion  set ?', newCliente)
-    const idorden_instalacion = newOrden_instalacion.insertId;
+    const Orden_instalacion = await pool.query('insert into orden_instalacion  set ?', newOrden)
+    idorden_instalacion = Orden_instalacion.insertId;
+    //console.log(idorden_instalacion)
     //----------------------------------------------------------------------------------//
+    /** contrato */
+    const { tipo_enlace, wifi_nombre, wifi_clave, tipo_servicio } = req.body;
+    const row = await pool.query('select * from plan_servicio where nombre_plan = ?', [tipo_servicio]);
+    row.forEach(element => {
+        plan_servicio = element.idplan_servicio
+    });
+    const newContrato = { idcliente, plan_servicio, tipo_enlace, wifi_nombre, wifi_clave, idorden_instalacion }
+
+    await pool.query('insert contrato_servicio  set ?', newContrato)
+
+    res.json({ status: 'Categoria creada' });
+};
+
+
+contratoCtrl.createDetalleEquipos = async (req, res, next) => {
+
+    const { cantidad, precio } = req.body
+
+    const array = req.body;
+
+
+    for (let index = 0; index < array.length; index++) {
+        const rows = array[index];
+        const cantidad = rows.cantidad;
+        const equipo = rows.equipo;
+        const total_equipo = rows.precio;
+
+        const orden_instalacion = idorden_instalacion
+
+        if (cantidad != '') {
+            const new_detalle = {
+                equipo,
+                cantidad,
+                total_equipo,
+                orden_instalacion
+
+            }
+          //  await pool.query('insert into detalle_equipos set ?', new_detalle);
+
+            console.log(orden_instalacion )
+        }
+
+
+
+    }
     //detalle oreden instalacion
+    /*
     const { nombre_equipo, cantidad } = req.body;
     const row_equipo = await pool.query("select * from equipos  where  equipo = ? ", nombre_equipo);
     row_equipo.forEach(element => {
@@ -31,12 +87,12 @@ contratoCtrl.createContrato = async (req, res, next) => {
     });
     const total = precio * cantidad;
     const new_detalle = { equipo, cantidad, total, idorden_instalacion };
-
+ 
     const newOrden_instalacion = await pool.query('insert detalle_equipos  set ?', new_detalle);
     //----------------------------------------------------------------------------------//
     // contrato 
-
-
+ 
+*/
 
     res.json({ status: 'Categoria creada' });
 };

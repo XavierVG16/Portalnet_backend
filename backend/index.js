@@ -40,7 +40,8 @@ app.use('/equipo', require('./routes/equipos.router'));
 app.use('/producto', require('./routes/producto.router'));
 app.use('/usuario', require('./routes/usuario.router'));
 app.use('/cliente', require('./routes/cliente.router'));
-app.use('/orden',require('./routes/orden_instalacion.router'));
+//app.use('/orden',require('./routes/orden_instalacion.router'));
+app.use('/contrato', require('./routes/contrato.router'));
 
 // starting the server
 app.listen(app.get('port'), () => {
