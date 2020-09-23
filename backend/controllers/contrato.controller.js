@@ -1,10 +1,11 @@
 const pool = require("../database");
 
 const contratoCtrl = {};
-var idorden_instalacion;
 
+var idorden_instalacion;
+var orden_f;
 contratoCtrl.getcontratos = async (req, res, next) => {
-    const contrato = await pool.query("select * from contrato_servicio");
+    //    const contrato = await pool.query("select * from contrato_servicio");
 
     res.json(contrato);
 };
@@ -12,11 +13,11 @@ contratoCtrl.getcontratos = async (req, res, next) => {
 contratoCtrl.createContrato = async (req, res, next) => {
 
 
-    const { cedula, nombre, apellido, direccion, referencia } = req.body;
+    const { cedula, nombre, apellido, direccion, referencia, telefono, email } = req.body;
 
     // IMNGRESAR clientes
     const newCliente = {
-        cedula, nombre, apellido, direccion, referencia
+        cedula, nombre, apellido, direccion, referencia, telefono, email
     };
     const cliente = await pool.query('insert into cliente  set ?', newCliente);
 
@@ -30,7 +31,12 @@ contratoCtrl.createContrato = async (req, res, next) => {
 
     const Orden_instalacion = await pool.query('insert into orden_instalacion  set ?', newOrden)
     idorden_instalacion = Orden_instalacion.insertId;
-    //console.log(idorden_instalacion)
+    /** urado en una session */
+    req.session.idorden = { dia_instalacion };
+    req.flash('s', idorden_instalacion );
+    orden_f = dia_instalacion;
+
+
     //----------------------------------------------------------------------------------//
     /** contrato */
     const { tipo_enlace, wifi_nombre, wifi_clave, tipo_servicio } = req.body;
@@ -52,49 +58,41 @@ contratoCtrl.createDetalleEquipos = async (req, res, next) => {
 
     const array = req.body;
 
+  //   console.log(idorden_instalacion)
+    console.log(req.flash('s'))
+    ;
+   // console.log(req.session.idorden);
+    /**       const total = 0;
+      for (let index = 0; index < array.length; index++) {
+          const rows = array[index];
+          const cantidad = rows.cantidad;
+          const equipo = rows.equipo;
+          const total_equipo = rows.precio;
+          total = total + total_equipo
+  
+  
+  
+  
+          if (cantidad != '') {
+              const new_detalle = {
+                  equipo,
+                  cantidad,
+                  total_equipo,
+                  orden_instalacion
+  
+              }
+              //   await pool.query('insert into detalle_equipos set ?', new_detalle);
+  
+  
+          }
+  
+  
+  
+      }
+  */
+    //   await pool.query('Update  orden_instalacion set ? where idorden_instalacion = ?', [total, orden_instalacion])
 
-    for (let index = 0; index < array.length; index++) {
-        const rows = array[index];
-        const cantidad = rows.cantidad;
-        const equipo = rows.equipo;
-        const total_equipo = rows.precio;
-
-        const orden_instalacion = idorden_instalacion
-
-        if (cantidad != '') {
-            const new_detalle = {
-                equipo,
-                cantidad,
-                total_equipo,
-                orden_instalacion
-
-            }
-          //  await pool.query('insert into detalle_equipos set ?', new_detalle);
-
-            console.log(orden_instalacion )
-        }
-
-
-
-    }
-    //detalle oreden instalacion
-    /*
-    const { nombre_equipo, cantidad } = req.body;
-    const row_equipo = await pool.query("select * from equipos  where  equipo = ? ", nombre_equipo);
-    row_equipo.forEach(element => {
-        equipo = idequipo.element
-        precio = precio.element
-    });
-    const total = precio * cantidad;
-    const new_detalle = { equipo, cantidad, total, idorden_instalacion };
- 
-    const newOrden_instalacion = await pool.query('insert detalle_equipos  set ?', new_detalle);
-    //----------------------------------------------------------------------------------//
-    // contrato 
- 
-*/
-
-    res.json({ status: 'Categoria creada' });
+    res.json({ status: 'Contrato creada' });
 };
 contratoCtrl.getContrato = async (req, res, next) => {
     const { id } = req.params;
@@ -104,7 +102,7 @@ contratoCtrl.getContrato = async (req, res, next) => {
 
 contratoCtrl.editContrato = async (req, res, next) => {
     const { id } = req.params;
-    console.log(id)
+
     const { nombre_plan, descripcion, precio, cantidad_megas } = req.body;
     const subida_kbps = cantidad_megas * 1024;
     const bajada_kbps = cantidad_megas * 1024;

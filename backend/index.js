@@ -4,6 +4,7 @@ const MysQlStore = require("express-mysql-session");
 const session = require("express-session");
 const path = require("path");
 const multer = require("multer");
+const flash = require("connect-flash");
 const app = express();
 require("dotenv").config();
 
@@ -14,16 +15,19 @@ const { database } = require("./keys");
 app.set('port', process.env.PORT || 3000);
 
 // Middlewares
-app.use(cors({ origin: 'https://sistema-portalnet.herokuapp.com' }));
+app.use(cors({ origin: 'http://localhost:4200' }));
+app.set('trust proxy', 1)
 app.use(express.json());
 app.use(
   session({
     secret: "xavier",
     resave: false,
     saveUninitialized: false,
-    store: new MysQlStore(database),
+ 
+    cookie: { secure: true }
   })
 );
+app.use(flash())
 const storage = multer.diskStorage({
   destination: path.join(__dirname, "public/img/uploads"),
   filename: (req, file, cb) => {
