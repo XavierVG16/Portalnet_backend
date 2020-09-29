@@ -2,8 +2,7 @@ const pool = require("../database");
 
 const facturaCtrl = {};
 facturaCtrl.getFacturas = async (req, res, next) => {
-    const servicio = await pool.query("select * from plan_servicio");
-    const facturas = await pool.query("select * from factura");
+    const facturas = await pool.query('select * from contrato_servicio inner join cliente on contrato_servicio.idcliente  = cliente.idcliente inner join plan_servicio on contrato_servicio.plan_servicio  = plan_servicio.idplan_servicio inner join factura on contrato_servicio.idcontrato_servicio = factura.contrato_servicio');
 
     res.json(facturas );
 
@@ -31,8 +30,8 @@ facturaCtrl.createFactura = async (req, res, next) => {
 };
 facturaCtrl.getFactura = async (req, res, next) => {
     const { id } = req.params;
-    const servicio = await pool.query('SELECT * FROM plan_servcio WHERE idplan_servicio =  ?', [id]);
-    res.json(servicio);
+    const factura = await pool.query('select * from contrato_servicio inner join cliente on contrato_servicio.idcliente  = cliente.idcliente inner join plan_servicio on contrato_servicio.plan_servicio  = plan_servicio.idplan_servicio inner join factura on contrato_servicio.idcontrato_servicio = factura.contrato_servicio where cliente.cedula = ? ORDER BY factura.estado ASC', [id]);
+    res.json(factura);
 };
 
 facturaCtrl.editFactura = async (req, res, next) => {

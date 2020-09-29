@@ -91,8 +91,10 @@ contratoCtrl.createDetalleEquipos = async (req, res, next) => {
 };
 contratoCtrl.getContrato = async (req, res, next) => {
     const { id } = req.params;
-    const servicio = await pool.query('SELECT * FROM plan_servcio WHERE idplan_servicio =  ?', [id]);
-    res.json(servicio);
+    const cedula = id;
+    console.log(cedula)
+    const contrato = await pool.query('select * from contrato_servicio inner join cliente on contrato_servicio.idcliente  = cliente.idcliente inner join plan_servicio on contrato_servicio.plan_servicio  = plan_servicio.idplan_servicio inner join factura on contrato_servicio.idcontrato_servicio = factura.contrato_servicio where cliente.cedula = ? ORDER BY factura.estado ASC', [cedula]);
+    res.json(contrato);
 };
 
 contratoCtrl.editContrato = async (req, res, next) => {

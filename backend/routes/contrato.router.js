@@ -3,7 +3,8 @@ const router = express.Router();
 const contrato = require("../controllers/contrato.controller");
 
 
-router.get("/", contrato.getcontratos)
+router.get("/", contrato.getcontratos);
+router.get("/:id", contrato.getContrato);
 
 router.post("/:id", contrato.createContrato);
 
