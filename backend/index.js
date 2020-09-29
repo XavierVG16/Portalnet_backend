@@ -45,6 +45,8 @@ const storage = multer.diskStorage({
 });
 app.use(multer({ storage }).single("image"));
 
+
+
 // Routes
 //app.use( '/user',require('./routes/user.router'))
 app.use('/servicio', require('./routes/servicio.routes'));
