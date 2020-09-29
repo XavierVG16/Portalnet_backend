@@ -33,7 +33,7 @@ app.use(
     secret: "xavier",
     resave: false,
     saveUninitialized: false,
-
+    store: new MysQlStore(database),
     cookie: { secure: true }
   })
 );
