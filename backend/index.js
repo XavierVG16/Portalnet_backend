@@ -8,7 +8,6 @@ const flash = require("connect-flash");
 const app = express();
 require("dotenv").config();
 
-
 require('./database');
 const { database } = require("./keys");
 // Settings
@@ -16,7 +15,7 @@ const { database } = require("./keys");
 app.set('port', process.env.PORT || 3000);
 
 // Middlewares
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV != "production") {
   app.use(cors({ origin: 'http://localhost:4200' }));
 
 }
