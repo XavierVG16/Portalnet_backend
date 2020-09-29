@@ -15,14 +15,10 @@ const { database } = require("./keys");
 app.set('port', process.env.PORT || 3000);
 
 // Middlewares
-if (process.env.NODE_ENV != "production") {
-  app.use(cors({ origin: 'http://localhost:4200' }));
 
-}
-else {
   app.use(cors({ origin: 'https://sistema-portalnet.herokuapp.com' }));
 
-}
+
 
 
 app.set('trust proxy', 1)
