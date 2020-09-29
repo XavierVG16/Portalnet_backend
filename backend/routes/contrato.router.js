@@ -3,11 +3,11 @@ const router = express.Router();
 const contrato = require("../controllers/contrato.controller");
 
 
+router.get("/", contrato.getcontratos)
 
+router.post("/:id", contrato.createContrato);
 
-router.post("/", contrato.createContrato);
-
-router.post("/detalle", contrato.createDetalleEquipos);
+router.post("/detalle/equipos/:id", contrato.createDetalleEquipos);
 
 
 module.exports = router

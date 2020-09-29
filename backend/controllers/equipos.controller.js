@@ -34,7 +34,7 @@ equipoCtrl.getEquipo = async (req, res, next) => {
 
 equipoCtrl.editEquipo = async (req, res, next) => {
     const { id } = req.params;
-    console.log(id)
+    console.log(req.body)
     const { equipo, cantidad, precio, serie, _proveedor_nombre, descripcion } = req.body;
     const row = await pool.query('select * from proveedor where proveedor_nombre = ?', _proveedor_nombre);
     row.forEach(element => {

@@ -56,6 +56,7 @@ app.use('/usuario', require('./routes/usuario.router'));
 app.use('/cliente', require('./routes/cliente.router'));
 //app.use('/orden',require('./routes/orden_instalacion.router'));
 app.use('/contrato', require('./routes/contrato.router'));
+app.use('/factura', require('./routes/factura.router'));
 
 // starting the server
 app.listen(app.get('port'), () => {
