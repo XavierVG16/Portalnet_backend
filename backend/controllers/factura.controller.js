@@ -2,30 +2,76 @@ const pool = require("../database");
 
 const facturaCtrl = {};
 facturaCtrl.getFacturas = async (req, res, next) => {
-    const facturas = await pool.query('select * from contrato_servicio inner join cliente on contrato_servicio.idcliente  = cliente.idcliente inner join plan_servicio on contrato_servicio.plan_servicio  = plan_servicio.idplan_servicio inner join factura on contrato_servicio.idcontrato_servicio = factura.contrato_servicio');
 
-    res.json(facturas );
+    var hoy = new Date();
+    var dd = hoy.getDate();
+    const n_factura = 1;
+    const facturas = await pool.query('select * from contrato_servicio inner join cliente on contrato_servicio.idcliente  = cliente.idcliente inner join plan_servicio on contrato_servicio.plan_servicio  = plan_servicio.idplan_servicio inner join factura on contrato_servicio.idcontrato_servicio = factura.contrato_servicio');
+    for (let i = 0; i < facturas.length; i++) {
+        const element = facturas[i];
+        id = element.idfactura
+        contrato_servicio = element.contrato_servicio,
+            total = element.total,
+            fecha_pago_prox = element.fecha_pago_prox;
+        n_f = element.n_factura;
+
+        if (fecha_pago_prox == dd) {
+            if (n_f == 0) {
+
+                const newFactura = {
+                    contrato_servicio,
+                    fecha_pago_prox,
+                    total,
+                    n_factura
+
+                };
+                const editFactura = {
+                    n_factura
+                };
+                console.log(newFactura)
+                const up = await pool.query('Update factura set ? where idfactura = ?', [editFactura, id]);
+
+                await pool.query('insert into factura set ?', newFactura);
+
+            }
+
+        }
+
+
+
+
+
+    }
+    res.json(facturas);
 
 
 };
 
 facturaCtrl.createFactura = async (req, res, next) => {
-    const { nombre_plan, descripcion, precio, cantidad_megas, comparticion } = req.body;
-    const subida_kbps = cantidad_megas * 1024;
-    const bajada_kbps = cantidad_megas * 1024;
-    const m_subida_kbps = subida_kbps / 4;
-    const m_bajada_kbps = bajada_kbps / 4;
 
-    const newServicio = {
-        nombre_plan,
-        descripcion,
-        precio,
-        cantidad_megas,
-        subida_kbps,
-        bajada_kbps, comparticion, m_subida_kbps, m_bajada_kbps
-    };
-    const servicio = await pool.query('insert into plan_servicio  set ?', newServicio);
+    var hoy = new Date();
+    var dd = hoy.getDate();
+    const facturas = await pool.query('select * from contrato_servicio inner join cliente on contrato_servicio.idcliente  = cliente.idcliente inner join plan_servicio on contrato_servicio.plan_servicio  = plan_servicio.idplan_servicio inner join factura on contrato_servicio.idcontrato_servicio = factura.contrato_servicio');
+    for (let i = 0; i < facturas.length; i++) {
+        const element = facturas[i];
 
+        contrato_servicio = element.contrato_servicio,
+            total = element.total,
+            fecha_pago_prox = element.fecha_pago_prox;
+        if (fecha_pago_prox == dd) {
+            const newFactura = {
+                contrato_servicio,
+                total,
+                fecha_pago_prox
+            };
+            console.log(newFactura)
+            // await pool.query('insert into factura set ?', newFactura);
+        }
+
+
+
+
+    }
     res.json({ status: 'Categoria creada' });
 };
 facturaCtrl.getFactura = async (req, res, next) => {
@@ -35,22 +81,16 @@ facturaCtrl.getFactura = async (req, res, next) => {
 };
 
 facturaCtrl.editFactura = async (req, res, next) => {
-    const { id } = req.params;
+    const { fecha_actual, fecha_pago_prox } = req.body
+    const { idfactura } = req.body;
+    const id = idfactura
+    const estado = 1;
+    const n_factura =0 
+    const editFactura = { fecha_actual, fecha_pago_prox, estado , n_factura};
     console.log(id)
-    const { nombre_plan, descripcion, precio, cantidad_megas, comparticion } = req.body;
-    const subida_kbps = cantidad_megas * 1024;
-    const bajada_kbps = cantidad_megas * 1024;
-    const m_subida_kbps = subida_kbps / 4;
-    const m_bajada_kbps = bajada_kbps / 4;
-    const edCategoria = {
-        nombre_plan,
-        descripcion,
-        precio,
-        cantidad_megas,
-        subida_kbps,
-        bajada_kbps, comparticion, m_subida_kbps, m_bajada_kbps
-    };
-    await pool.query('UPDATE plan_servicio set ? WHERE idplan_servicio = ?', [edCategoria, id]);
+    console.log(editFactura)
+    const up = await pool.query('Update factura set ? where idfactura = ?', [editFactura, id]);
+    console.log(up)
     res.json({ status: 'Servicio Updated' });
 };
 
