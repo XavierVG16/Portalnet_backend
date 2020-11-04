@@ -8,6 +8,9 @@ router.get("/", cliente.getclientes);
 router.post("/", cliente.createCliente);
 router.get("/:id", cliente.getcliente);
 router.put("/:id", cliente.editCliente);
+router.put("/estado/:id", cliente.editCliente);
+
+
 router.delete("/:id", cliente.deleteCliente);
 
 module.exports = router;

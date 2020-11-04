@@ -15,8 +15,6 @@ contratoCtrl.createContrato = async (req, res, next) => {
     const { id } = req.params
 
     const idorden_instalacion = id;
-    console.log(idorden_instalacion)
-
 
     const { cedula, nombre, apellido, direccion, referencia, telefono, email, propiedad } = req.body;
 
@@ -37,15 +35,11 @@ contratoCtrl.createContrato = async (req, res, next) => {
 
     const Orden_instalacion = await pool.query('insert into orden_instalacion  set ?', newOrden)
 
-    /** urado en una session */
-
-
-
     //----------------------------------------------------------------------------------//
     /** contrato */
     const { tipo_enlace, wifi_nombre, wifi_clave, tipo_servicio, wifi_nombre2, wifi_clave2 } = req.body;
     const row = await pool.query('select * from plan_servicio where nombre_plan = ?', [tipo_servicio]);
-   
+
     row.forEach(element => {
         plan_servicio = element.idplan_servicio
         total = element.precio
@@ -53,11 +47,11 @@ contratoCtrl.createContrato = async (req, res, next) => {
     });
     const newContrato = { idcliente, plan_servicio, tipo_enlace, wifi_nombre, wifi_clave, idorden_instalacion, wifi_nombre2, wifi_clave2 }
 
-   const contrato = await pool.query('insert contrato_servicio  set ?', newContrato)
+    const contrato = await pool.query('insert contrato_servicio  set ?', newContrato)
     const contrato_servicio = contrato.insertId;
     /**primera factura */
 
-    const newfactura = { contrato_servicio,total};
+    const newfactura = { contrato_servicio, total };
     await pool.query('insert factura  set ?', newfactura)
     res.json({ status: 'contrato creado creada' });
 };
@@ -81,7 +75,7 @@ contratoCtrl.createDetalleEquipos = async (req, res, next) => {
 
     }
     const edit = { total }
-    //  console.log(new_detalle)
+    console.log(req.body)
 
 
     await pool.query('insert into detalle_equipos set ?', new_detalle);
@@ -91,10 +85,10 @@ contratoCtrl.createDetalleEquipos = async (req, res, next) => {
 };
 contratoCtrl.getContrato = async (req, res, next) => {
     const { id } = req.params;
-    const cedula = id;
-    console.log(cedula)
-    const contrato = await pool.query('select * from contrato_servicio inner join cliente on contrato_servicio.idcliente  = cliente.idcliente inner join plan_servicio on contrato_servicio.plan_servicio  = plan_servicio.idplan_servicio inner join factura on contrato_servicio.idcontrato_servicio = factura.contrato_servicio where cliente.cedula = ? ORDER BY factura.estado ASC', [cedula]);
+
+    const contrato = await pool.query('select * from contrato_servicio  inner join plan_servicio on contrato_servicio.plan_servicio  = plan_servicio.idplan_servicio   where idcliente = ? ', [id]);
     res.json(contrato);
+    console.log(contrato)
 };
 
 contratoCtrl.editContrato = async (req, res, next) => {

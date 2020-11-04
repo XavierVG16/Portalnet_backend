@@ -35,18 +35,45 @@ clienteCtrl.createCliente = async (req, res, next) => {
         email,
         telefono
     };
-    const id = await pool.query("insert into cliente set ?", newCliente);
+    try {
+        const rows = await pool.query('select * from cliente where cedula = ?', cedula)
+        if (rows.length != 0) {
+            const cliente = rows[0]
 
-    id_cliente = id.insertId;
-    console.log(id_cliente)
-    res.json({ status: "Cliente creado" });
+            res.status(401).json({ status: "El cliente ya esta registrado", cliente });
+
+
+        } else {
+            const id = await pool.query("insert into cliente set ?", newCliente);
+            const cliente = id.insertId
+            res.status(200).json(cliente);
+        }
+
+
+    } catch (error) {
+        console.log(error)
+
+    }
+
 };
+clienteCtrl.estadoCliente = async (req, res, next) => {
+    const { estado } = req.body
+    const { id } = req.params
+    try {
+        await pool.query("update cliente set estado = ? where idcliente = ?", [estado, id]);
 
+    } catch (error) {
+        console.log(error)
+    }
+
+}
 clienteCtrl.getcliente = async (req, res, next) => {
     const { id } = req.params;
-    const cliente = await pool.query("select * from cliente where idcliente = ?", [id]);
+    const clientes = await pool.query("select * from cliente where idcliente = ?", [id]);
+    const cliente = clientes[0]
 
     res.json(cliente);
+
 };
 
 clienteCtrl.editCliente = async (req, res, next) => {
@@ -81,8 +108,13 @@ clienteCtrl.editCliente = async (req, res, next) => {
 
 clienteCtrl.deleteCliente = async (req, res, next) => {
     const { id } = req.params;
+    try {
+        await pool.query("delete from cliente where idcliente = ?", [id]);
+        res.json({ status: "Cliente elimiado" });
 
-    await pool.query("delete from cliente where cedula = ?", [id]);
-    res.json({ status: "Cliente elimiado" });
+    } catch (error) {
+        console.log(error)
+    }
+
 };
 module.exports = clienteCtrl;

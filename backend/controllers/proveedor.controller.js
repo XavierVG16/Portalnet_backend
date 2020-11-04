@@ -51,8 +51,16 @@ proveedorCtrl.editProveedor = async (req, res, next) => {
 
 proveedorCtrl.deleteProveedor = async (req, res, next) => {
     const { id } = req.params;
-    await pool.query('DELETE FROM proveedor WHERE id_proveedor = ?', [id]);
-    res.json({ status: 'proveedor Deleted' });
+    try {
+        await pool.query('DELETE FROM proveedor WHERE id_proveedor = ?', [id]);
+        res.json({ status: 'proveedor Deleted' });
+    }
+
+    catch (err) {
+        console.log(err);
+        res.status(400).json({ status: 'No se puede eliminar el proveedor' });
+
+    }
 };
 
 module.exports = proveedorCtrl;
