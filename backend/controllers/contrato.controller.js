@@ -13,31 +13,10 @@ contratoCtrl.createContrato = async (req, res, next) => {
 
     //  console.log(req.body)
     const { id } = req.params
+    const idcliente = id;
+    console.log(idcliente)
+    const { tipo_enlace, tipo_servicio, direccion, dia_instalacion, hora_instalacion } = req.body;
 
-    const idorden_instalacion = id;
-
-    const { cedula, nombre, apellido, direccion, referencia, telefono, email, propiedad } = req.body;
-
-    // IMNGRESAR clientes
-    const newCliente = {
-        cedula, nombre, apellido, direccion, propiedad, referencia, telefono, email
-    };
-    const cliente = await pool.query('insert into cliente  set ?', newCliente);
-
-    const idcliente = cliente.insertId
-
-
-    //----------------------------------------------------------------------------------//
-    //orden Instalacion
-    const { dia_instalacion, hora_instalacion } = req.body;
-
-    const newOrden = { idorden_instalacion, dia_instalacion, hora_instalacion }
-
-    const Orden_instalacion = await pool.query('insert into orden_instalacion  set ?', newOrden)
-
-    //----------------------------------------------------------------------------------//
-    /** contrato */
-    const { tipo_enlace, wifi_nombre, wifi_clave, tipo_servicio, wifi_nombre2, wifi_clave2 } = req.body;
     const row = await pool.query('select * from plan_servicio where nombre_plan = ?', [tipo_servicio]);
 
     row.forEach(element => {
@@ -45,37 +24,39 @@ contratoCtrl.createContrato = async (req, res, next) => {
         total = element.precio
 
     });
-    const newContrato = { idcliente, plan_servicio, tipo_enlace, wifi_nombre, wifi_clave, idorden_instalacion, wifi_nombre2, wifi_clave2 }
+    const newContrato = { idcliente, plan_servicio, tipo_enlace, direccion }
 
     const contrato = await pool.query('insert contrato_servicio  set ?', newContrato)
     const contrato_servicio = contrato.insertId;
+    /**orden instalacion */
+    const newOrden = { dia_instalacion, hora_instalacion, contrato_servicio }
+    const orden = await pool.query('insert orden_instalacion  set ?', newOrden);
+    const id_orden = [orden.insertId];
     /**primera factura */
 
     const newfactura = { contrato_servicio, total };
-    await pool.query('insert factura  set ?', newfactura)
-    res.json({ status: 'contrato creado creada' });
+    await pool.query('insert factura  set ?', newfactura);
+    res.status(200).json(id_orden);
+
+
+
 };
 
 
 contratoCtrl.createDetalleEquipos = async (req, res, next) => {
 
-    const { equipo,
-        cantidad,
-        precio,
-        idorden_instalacion } = req.body;
+    const { equipo, cantidad, precio } = req.body;
     const { id } = req.params;
-    const total = id;
-    const orden_instalacion = idorden_instalacion
+    const orden_instalacion = id
     total_equipo = precio
     const new_detalle = {
         equipo,
         cantidad,
         total_equipo,
         orden_instalacion
-
     }
     const edit = { total }
-    console.log(req.body)
+    console.log(new_detalle)
 
 
     await pool.query('insert into detalle_equipos set ?', new_detalle);
