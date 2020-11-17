@@ -16,7 +16,7 @@ app.set('port', process.env.PORT || 3000);
 
 // Middlewares
 
-app.use(cors({ origin: process.env.CROSS_HOST }));
+app.use(cors({ origin: 'https://portal-net-frontend.vercel.app' }));
 
 
 
