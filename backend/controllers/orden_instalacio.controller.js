@@ -18,11 +18,11 @@ orden_instalacionCtrl.createOrden_instalacion = async (req, res, next) => {
     const id = await pool.query('insert into orden_instalacion  set ?', newOrden);
     console.log(id)
     id_orden = id.insertId
-    if(id_orden != 0){
+    if (id_orden != 0) {
         const { equipo, cantidad } = req.body;
         //insertar equipo
-        console.log ('existe Orden');
-        
+        console.log('existe Orden');
+
     }
     res.json({ status: 'orden  creada' });
 };

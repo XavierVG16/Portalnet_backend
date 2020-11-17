@@ -16,7 +16,7 @@ app.set('port', process.env.PORT || 3000);
 
 // Middlewares
 
-app.use(cors({ origin: 'https://portal-net-frontend.vercel.app' }));
+app.use(cors({ origin: process.env.CROSS_HOST }));
 
 
 
@@ -53,6 +53,7 @@ app.use('/cliente', require('./routes/cliente.router'));
 app.use('/contrato', require('./routes/contrato.router'));
 app.use('/factura', require('./routes/factura.router'));
 app.use('/detalle', require('./routes/detalle_equipo.router'));
+app.use('/informe_tecnico', require('./routes/informe_tecnico.router'));
 // starting the server
 app.listen(app.get('port'), () => {
   console.log(`server on port ${app.get('port')}`);

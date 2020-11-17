@@ -59,8 +59,12 @@ contratoCtrl.createDetalleEquipos = async (req, res, next) => {
     console.log(new_detalle)
 
 
-    await pool.query('insert into detalle_equipos set ?', new_detalle);
-
+    const detalle = await pool.query('insert into detalle_equipos set ?', new_detalle);
+    const detalle_equipo = detalle.insertId;
+    const datos = {
+        detalle_equipo
+    }
+    await pool.query('insert into informe_tecnico set ?', datos);
     res.json({ status: 'Contrato creada' });
 
 };
@@ -72,6 +76,13 @@ contratoCtrl.getContrato = async (req, res, next) => {
     console.log(contrato)
 };
 
+contratoCtrl.getContrato_Detalle = async (req, res, next) => {
+    const { id } = req.params;
+
+    const contrato = await pool.query('select * from contrato_servicio  inner join plan_servicio on contrato_servicio.plan_servicio  = plan_servicio.idplan_servicio inner join orden_instalacion on contrato_servicio.idcontrato_servicio = orden_instalacion.contrato_servicio  where idcontrato_servicio = ? ', [id]);
+    res.json(contrato[0]);
+    console.log(contrato)
+};
 contratoCtrl.editContrato = async (req, res, next) => {
     const { id } = req.params;
 
