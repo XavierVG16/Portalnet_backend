@@ -1,5 +1,4 @@
 const express = require("express");
-const detalle_equiposCtrl = require("../controllers/detalle_equipos.controller");
 const router = express.Router();
 const detalle_equipo = require('../controllers/detalle_equipos.controller');
 const { route } = require("./auth.router");
